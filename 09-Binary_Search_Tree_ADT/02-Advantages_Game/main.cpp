@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -17,6 +18,8 @@ int main() {
         for (int i = 0; i < n; i++) {
             cin >> arr[i];
         }
+
+        // Find the first and second maximum
         int max1 = -1, max2 = -1;
         for (int num : arr) {
             if (num > max1) {

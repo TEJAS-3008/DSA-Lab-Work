@@ -1,81 +1,124 @@
+/*A. Write a separate C++ menu-driven program to implement stack ADT using a character array of size 5. Maintain proper boundary conditions and follow good coding practices. Stack ADT has the following operations,
+
+1.Push
+2.Pop
+3.Peek
+4.Exit
+What is the time complexity of each of the operations? (K4)
+
+*/
+
 #include <iostream>
 using namespace std;
 
-#define SIZE 5  // Maximum size of the stack
+#define size 5//making a fixed size of 5
 
-class Stack {
-private:
-    char arr[SIZE];  
-    int top;         
-
-public:
-    Stack() { top = -1; } 
-
-    void push(char ch);
-    void pop();
-    void peek();
+//creating the stack class
+class stack{
+    private:
+        //data members
+        char arr[size];
+        int count;
+        public:
+        //Constructor of the stack
+        stack(){
+            count = 0;
+        }
+        //member functions:
+        void push(char ch);
+        void pop();
+        void peek();
+        void display();
 };
 
-int main() {
-    Stack stack;
+int main(){
     int choice;
-    char value;
-
-    while (true) {
-        cout << "\nStack Menu:\n";
-        cout << "1. Push\n";
-        cout << "2. Pop\n";
-        cout << "3. Peek\n";
-        cout << "4. Exit\n";
-        cout << "Enter your choice: ";
+    stack s;
+    while(1){
+        cout << "\n<===== MENU =====>" << endl;
+        cout << "1.Push" << endl;
+        cout << "2.Pop" << endl;
+        cout << "3.Peek" << endl;
+        cout << "4.Exit" << endl;
+        cout << "Select your choice" << endl;
         cin >> choice;
-
-        switch (choice) {
+        switch(choice){
             case 1:
-                cout << "Enter character to push: ";
-                cin >> value;
-                stack.push(value);
+                char c;
+                cout << "Enter a character to push into the stack: ";
+                cin >> c;
+                s.push(c);
                 break;
             case 2:
-                stack.pop();
+                s.pop();
                 break;
             case 3:
-                stack.peek();
+                s.peek();
                 break;
             case 4:
-                cout << "Exiting program." << endl;
+                cout << "Exiting...." << endl;
                 return 0;
             default:
-                cout << "Invalid choice! Please enter a valid option." << endl;
+                cout << "Selected Option Cease to exist\nPlease Try Again" << endl;
         }
     }
 }
 
- // Push operation Time Complexity O(1)
- void Stack :: push(char ch) {
-    if (top == SIZE - 1) {
-        cout << "Stack Overflow! Cannot push " << ch << "." << endl;
-        return;
+//Defining the push function
+void stack::push(char ch){
+    if(count == size){
+        cout << "This action causes stack overflow\nProcess terminated" << endl;
+    }else{
+        arr[count] = ch;
+        count++;
+        cout << "The element " << ch << "pushed into the stack" << endl;
     }
-    arr[++top] = ch;
-    cout << ch << " pushed onto stack." << endl;
+    display();
 }
+//Time complexity of the push function is O(1)
 
-// Pop operation Time Complexity O(1)
-void Stack :: pop() {
-    if (top == -1) {
-        cout << "Stack Underflow! No elements to pop." << endl;
-        return;
-    }
-    cout << arr[top] << " popped from stack." << endl;
-    top--;
-}
 
- // Peek operation (View the top element) Time Complexity O(1)
- void Stack :: peek() {
-    if (top == -1) {
-        cout << "Stack is empty! No element to peek." << endl;
-        return;
+
+//defining the pop function
+void stack::pop(){
+    if(count <= 0){
+        cout << "The Stack is Empty\nPush elements and Try Again" << endl;
+    }else{
+        arr[count] = 0;
+        count--;
+        cout << "Top element of the stack is removed/poped" << endl;
     }
-    cout << "Top element: " << arr[top] << endl;
+    display();
 }
+//Time complexity if the pop function is O(1)
+
+
+
+//Defining the peek function
+void stack::peek(){
+    if(count <= 0){
+        cout << "The stack is empty \n" << endl;
+    }else{
+        cout << "Top element of the stack is " << arr[count - 1] << endl;
+    }
+}
+//Time complexity of the peek function is O(1)
+
+
+
+//Defining the Display function
+void stack::display(){
+    int loopcount = count;
+    cout << "STACK --->" << endl << endl;
+    while(loopcount--){
+        cout << "|" << arr[loopcount] << "|" << endl;
+        cout << "---" << endl;
+    }
+}
+//TIme complexity of the display function is O(1)
+
+
+
+
+
+

@@ -1,36 +1,35 @@
+
+
 #include<iostream>
+#include<vector>
 #include<unordered_set>
 using namespace std;
-int main()
-{
-    int t;
-    cout<<"enter the number of testcases\n";
-    cin>>t;
-    while(t--)
-    {
-        int n;
-        cout<<"enter the number of elements in the series: \n";
-        cin>>n;
-        int a[n];
-        cout<<"enter the elements of the series\n";
-        for(int i=0; i<n; i++)
-        {
-            cin>>a[i];
-        }
-        unordered_set<int>seen;
-        int moves=0;
-        for(int i= 0; i<n; i++)
-        {
-            while(seen.find(a[i])!=seen.end())
-            {
-                seen.erase(a[moves]);
-                moves++;
-            }
-            seen.insert(a[i]); 
-        }
-        
-        cout<<"no of moves taken "<<moves<<"\n";
-    }
 
-    return 0;
+int main(){
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<int> a;
+        for(int i = 0;i < n;i++){
+            int e;
+            cin >> e;
+            a.push_back(e);
+        }
+
+        unordered_set<int> seen;
+        int dups_RtoL = 0;
+        for(int i = n - 1;i >= 0;i--){
+            if(seen.find(a[i]) == seen.end()){
+                dups_RtoL++;
+                seen.insert(a[i]);
+            }else{
+                break;
+            }
+        }
+
+        cout << n - dups_RtoL << endl;
+    }
 }
+

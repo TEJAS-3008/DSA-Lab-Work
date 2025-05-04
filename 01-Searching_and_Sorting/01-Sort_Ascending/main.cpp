@@ -1,132 +1,133 @@
-//program to sort an array in ascending order
+/*
+1. Write a C++ menu-driven program to sort a given array in ascending order. Design proper functions, maintain boundary conditions and follow coding best practices. The menus are as follows:
 
-#include<cstdio>
-#include<cstring>
+a. Bubble Sort
+b. Selection Sort
+c. Insertion Sort
+d. Exit
 
-void Bubblesort(int [],int);
-void Selectionsort(int [],int);
-void Insertionsort(int [],int);
-void Display(int[],int);
+*/
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+//function prototypes
+void display(const vector<int>& arr);
+void bubblesort(vector<int>& arr);
+void selectionsort(vector<int>& arr);
+void insertionsort(vector<int>& arr);
+void ExitMenu();
+
 
 int main(){
+    vector<int> arr;
+    int size;
+    int choice;
 
-int choice,num,element;
-
-printf("Enter The Number of Elements : ");
-scanf("%d",&num);
-int arr[num],arr2[num] ;
-printf("Enter The Elements : ");
-for (int i = 0; i < num; i++)
-{
-    scanf("%d",&element);
-    arr[i] = element;
-    arr2[i] = element;
+    cout << "Enter the size of the array:";
+    cin >> size;
+    for(int i = 0; i < size; i++){
+        int element;
+        cout << "enter element no " << i + 1 << ":" << endl;
+        cin >> element;
+        arr.push_back(element);
+    }
+    
+    while(1){
+        //defining the menu
+        cout << "<===== MENU =====>" << endl;
+        cout << "1.Bubblesort the array" << endl;
+        cout << "2.Selection sort the array" << endl;
+        cout << "3.Insertion sort the array" << endl;
+        cout << "4.Exit Menu" << endl;
+        cout << "\n";
+        cout << "select your options in menu within 1 to 4:" << endl;
+        cin >> choice;
+        cout << endl;
+        switch(choice){
+            case 1:
+                bubblesort(arr);
+                break;
+            case 2:
+                selectionsort(arr);
+                break;
+            case 3:
+                insertionsort(arr);
+                break;
+            case 4:
+                ExitMenu();
+                return 0;
+            default:
+                cout << "Selected option not in the menu!!\nPLEASE try again!\n\n" << endl;
+        }
+    }
+    
 }
 
-while (1){
+//defining the functions
 
-    printf("\n\n         MENU          \n");
-    printf("1. Bubble Sort\n");
-    printf("2. Selection Sort\n");
-    printf("3. Insertion Sort\n");
-    printf("4. Display Original Array\n");
-    printf("5. Exit\n");
-printf("\nEnter Your Choice : ");
-scanf("%d",&choice);
-switch (choice)
-{
-case 1:
-    Bubblesort(arr,num);
-    break;
-case 2:
-    Selectionsort(arr,num);
-    break;
-case 3:
-    Insertionsort(arr,num);
-    break;
-case 4:
-    Display(arr2,num);
-    break;
-case 5:
-    return 0;
-default:
-    printf("Invalid");
-    break;
-}
-};
+void display(const vector<int>& arr){
 
-
-    return 0;
+    cout << "SORTED ARRAY: | ";
+    for(int num : arr){
+        cout << num << " | ";
+    }
+    cout << endl;
 }
 
-void Bubblesort(int arr2[],int num){
-      
-    for (int i = 0; i< num; i++)
-    {
-        for (int j = 0; j < (num-1); j++)
-        {
-            if(arr2[j]>arr2[j+1]){
-                int temp = arr2[j+1];
-                arr2[j+1] = arr2[j];
-                arr2[j] = temp;
-
+void bubblesort(vector<int>& arr){
+    int n = arr.size();
+    for(int i = 0; i < n - 1; i++){
+        for(int j = 0; j < n - i - 1; j++){
+            if(arr[j] > arr[j + 1]){
+                int temp;
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
             }
         }
-        
-    }
-    printf("The Sorted Array is : ");
-     for (int i = 0; i<num; i++)
-    {
-        printf("%d  ",arr2[i]);
     }
 
+    display(arr);
 }
 
-void Selectionsort(int arr[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        int min = i;
-        for (int j = i + 1; j < n; j++) {
-            if (arr[j] < arr[min]) {
-                min = j;
+void selectionsort(vector<int>& arr){
+    int n = arr.size();
+    for(int i = 0; i < n - 1; i++){
+        int minindex = i;
+        for(int j = i + 1; j < n; j++){
+            if(arr[j] < arr[minindex]){
+                minindex = j;
             }
         }
-        int temp = arr[i];
-        arr[i] = arr[min];
-        arr[min] = temp;
+        int temp;
+        temp = arr[i];
+        arr[i] = arr[minindex];
+        arr[minindex] = temp;
     }
-    printf("The Sorted Array is : ");
-    for (int i = 0; i<n; i++)
-    {
-        printf("%d  ",arr[i]);
-    }
-}
-void Insertionsort(int arr[], int N) {
 
-    for (int i = 1; i < N; i++) {
+    display(arr);
+}
+
+void insertionsort(vector<int>& arr){
+    int n = arr.size();
+    for(int i = 1; i < n; i++){
         int key = arr[i];
         int j = i - 1;
-
-        while (j >= 0 && arr[j] > key) {
+        while(j >= 0 && arr[j] > key){
             arr[j + 1] = arr[j];
-            j = j - 1;
+            j--;
         }
         arr[j + 1] = key;
     }
-printf("The Sorted Array is : ");
-    for (int i = 0; i<N; i++)
-    {
-        printf("%d  ",arr[i]);
-    }
-}
 
-void Display(int arr[],int N){
-  printf("The Array is : ");
-    for (int i = 0; i<N; i++)
-    {
-        printf("%d  ",arr[i]);
-    }
-
+    display(arr);
 }
 
 
 
+void ExitMenu(){
+    cout << "Menu Exited!!" << endl;
+}

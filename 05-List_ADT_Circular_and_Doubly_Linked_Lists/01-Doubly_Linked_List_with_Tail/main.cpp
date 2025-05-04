@@ -1,275 +1,292 @@
-/*
-A. Write a menu-driven program to implement List ADT using a doubly linked list with a
-tail. Maintain proper boundary conditions and follow good coding practices. The List ADT has
-the following operations,
-1. Insert Beginning
-2. Insert End
-3. Insert Position
-4. Delete Beginning
-5. Delete End
-6. Delete Position
-7. Search
-8. Display
-9. Exit
+
+/*Doubly linked list implementation using head and tail, the menu driven program contains following operations:
+1.Insert beginning
+2.Insert end
+3.insert position
+4.delete beginning
+5.delete end
+6.delete position
+7.display
+8.search
+9.exit
+write the time complexities for each operation
 */
+
 
 #include <iostream>
 #include <cstdlib>
 using namespace std;
 
-class DLL {
-private:
-    struct node {
-        int data;
-        struct node* previous;
-        struct node* next;
-    };
-    struct node* head;
-    struct node* tail;
 
-public:
-    DLL() { head = nullptr; tail = nullptr; }
+//Declaring the class for the list
+class doubly{
+    private:
+        //declaring the structure , head and tail pointers
+        struct node{
+            int data;
+            struct node *next;
+            struct node *prev;
+        }*head = nullptr, *tail = nullptr;
+        int count = 0;
 
-    void insbeg(int);
-    void insend(int);
-    int inspos(int, int);
-    void delbeg();
-    void delend();
-    void delpos(int);
-    int search(int);
-    void display();
+    public:
+        //Member functions
+        doubly(){
+            head = nullptr;
+            tail = nullptr;
+        }
+        void insert_beginning(int value);
+        void insert_end(int value);
+        void delete_beginning();
+        void delete_end();
+        void insert_position(int value);
+        void delete_position();
+        void search();
+        void display();
 };
 
-int main() {
-    DLL arr;
-    int choice, num, pos;
 
-    while (1) {
-        cout << "\n           MENU\n";
-        cout << "1. Insert Beginning\n";
-        cout << "2. Insert End\n";
-        cout << "3. Insert Position\n";
-        cout << "4. Delete Beginning\n";
-        cout << "5. Delete End\n";
-        cout << "6. Delete Position\n";
-        cout << "7. Search\n";
-        cout << "8. Display\n";
-        cout << "9. Exit\n";
-        cout << "ENTER YOUR CHOICE: ";
-        cin >> choice;
 
-        switch (choice) {
-        case 1:
-            cout << "Enter the value: ";
-            cin >> num;
-            arr.insbeg(num);
-            break;
-        case 2:
-            cout << "Enter the value: ";
-            cin >> num;
-            arr.insend(num);
-            break;
-        case 3:
-            cout << "Enter the value: ";
-            cin >> num;
-            cout << "Enter the position: ";
-            cin >> pos;
-            arr.inspos(num, pos);
-            break;
-        case 4:
-            arr.delbeg();
-            break;
-        case 5:
-            arr.delend();
-            break;
-        case 6:
-            cout << "Enter the position: ";
-            cin >> pos;
-            arr.delpos(pos);
-            break;
-        case 7:
-            cout << "Enter the value to search: ";
-            cin >> num;
-            pos = arr.search(num);
-            if (pos != -1)
-                cout << "Element " << num << " found at position " << pos << ".\n";
-            else
-                cout << "Element " << num << " not found.\n";
-            break;
-        case 8:
-            arr.display();
-            break;
-        case 9:
-            cout << "Exiting program...\n";
-            return 0;
-        default:
-            cout << "Invalid choice! Please try again.\n";
+int main(){
+    int selection;
+    int value;
+    doubly list;
+    //Menu Program
+    while(1){
+        cout << "\n<======= MENU =======>" << endl;
+        cout << "1 -> Insert at the beginning" << endl;
+        cout << "2 -> Insert at the end" << endl;
+        cout << "3 -> Insert at position" << endl;
+        cout << "4 -> Delete at beginning" << endl;
+        cout << "5 -> Delete at end" << endl;
+        cout << "6 -> Delete at position" << endl;
+        cout << "7 -> Search" << endl;
+        cout << "8 -> Display" << endl;
+        cout << "9 -> Exit" << endl;
+        cout << "Enter your choice:";
+        cin >> selection;
+        switch(selection){
+            case 1:
+                cout << "Enter the value to insert:";
+                cin >> value;
+                list.insert_beginning(value);
+                break;
+            case 2:
+                cout << "Enter the value to insert:";
+                cin >> value;
+                list.insert_end(value);
+                break;
+            case 3:
+                cout << "Enter the value to insert:";
+                cin >> value;
+                list.insert_position(value);
+                break;
+            case 4:
+                list.delete_beginning();
+                break;
+            case 5:
+                list.delete_end();
+                break;
+            case 6:
+                list.delete_position();
+                break;
+            case 7:
+                list.search();
+                break;
+            case 8:
+                list.display();
+                break;
+            case 9:
+                cout << "Exiting....." << endl;
+                return 0;
+            default:
+                cout << "The option selected CEASE to exist\nTry Again!!" << endl;
         }
     }
 }
 
-// Insert at Beginning
-void DLL::insbeg(int num) {//O(1)
-    struct node* ptr = new node;
-    ptr->data = num;
-    ptr->previous = nullptr;
-    ptr->next = head;
 
-    if (head == nullptr) {
-        head = tail = ptr;
-    } else {
-        head->previous = ptr;
-        head = ptr;
+//Function to insert at beginning
+void doubly::insert_beginning(int value){
+    struct node *newnode = (struct node *)malloc(sizeof(struct node));
+    newnode->data = value;
+    newnode->next = nullptr;
+    newnode->prev = nullptr;
+    if(head == nullptr && tail == nullptr){
+        head = newnode;
+        tail = newnode;
+    }else{
+        head->prev = newnode;
+        newnode->next = head;
+        head = newnode;
     }
+    count++;
 }
+//Time Complexity of this function is O(1)
 
-// Insert at End
-void DLL::insend(int num) {//O(1)
-    struct node* ptr = new node;
-    ptr->data = num;
-    ptr->previous = tail;
-    ptr->next = nullptr;
 
-    if (head == nullptr) {
-        head = tail = ptr;
-    } else {
-        tail->next = ptr;
-        tail = ptr;
-    }
-}
 
-// Insert at Position (0-based index)
-int DLL::inspos(int num, int pos) {//O(n)
-    if (head == nullptr || pos == 0) {
-        insbeg(num);
-        return 0;
-    }
-
-    struct node* ptr = new node;
-    ptr->data = num;
-
-    struct node* temp = head;
-    int count = 0;
-
-    while (temp->next != nullptr && count < pos - 1) {
-        count++;
+//function to display the Linked List By traversing
+void doubly::display(){
+    struct node *temp = head;
+    cout << "Doubly Linked List: NULL <-> ";
+    while(temp != nullptr){
+        cout << temp->data << " <-> ";
         temp = temp->next;
     }
-
-    if (count < pos - 1) {
-        cout << "Invalid position.\n";
-        delete ptr;
-        return -1;
-    }
-
-    ptr->next = temp->next;
-    ptr->previous = temp;
-    if (temp->next)
-        temp->next->previous = ptr;
-    temp->next = ptr;
-    if (ptr->next == nullptr)
-        tail = ptr;
-
-    return 0;
+    cout << "NULL" << endl;
 }
+//Time Complexity of this function is O(n)
 
-// Delete from Beginning
-void DLL::delbeg() {//O(1)
-    if (head == nullptr) {
-        cout << "The list is empty.\n";
-        return;
-    }
-    struct node* ptr = head;
-    head = head->next;
 
-    if (head) {
-        head->previous = nullptr;
-    } else {
+//function for insertion at end
+void doubly::insert_end(int value){
+    struct node *newnode = (struct node*)malloc(sizeof(struct node));
+    newnode->data = value;
+    newnode->next = nullptr;
+    newnode->prev = nullptr;
+    struct node *temp = tail;
+    newnode->prev = temp;
+    temp->next = newnode;
+    tail = newnode;
+    count++;
+}
+//Time Complexity of this function is O(1)
+
+
+
+//function for deletion ar beginning
+void doubly::delete_beginning(){
+    struct node *temp = head;
+    if(head == tail){
+        head = nullptr;
         tail = nullptr;
+    }else{
+        head = temp->next;
+        temp->next = nullptr;
+        head->prev = nullptr;
     }
-    delete ptr;
+    if(count <= 0){
+        count = 0;
+    }else{
+        count--;
+    }
 }
+//Time Complexity of this function is O(1)
 
-// Delete from End
-void DLL::delend() {//O(1)
-    if (head == nullptr) {
-        cout << "The list is empty.\n";
-        return;
-    }
-    struct node* ptr = tail;
 
-    if (head == tail) {
-        head = tail = nullptr;
-    } else {
-        tail = tail->previous;
+
+//function for Deletion at the End
+void doubly::delete_end(){
+    struct node *temp = tail;
+    if(head == tail){
+        head = nullptr;
+        tail = nullptr;
+    }else{
+        tail = temp->prev;
         tail->next = nullptr;
+        temp->prev = nullptr;
     }
-    delete ptr;
+    if(count <= 0){
+        count = 0;
+    }else{
+        count--;
+    }
 }
+//Time Complexity of this function is O(1)
 
-// Delete from Position
-void DLL::delpos(int pos) {//O(n)
-    if (!head || pos < 0) {
-        cout << "Invalid position or empty list.\n";
-        return;
-    }
 
-    struct node* temp = head;
-    int count = 0;
 
-    while (temp && count < pos) {
-        temp = temp->next;
+//Function for Insertion at a position
+void doubly::insert_position(int value){
+    int pos;
+    cout << "Enter teh position to insert: ";
+    cin >> pos;
+
+    if(pos < 1 || pos > count){
+        cout << "Warning position exceeds limits" << endl;
+    }else if(pos == 1){
+        insert_beginning(value);
+    }else if(pos == count + 1){
+        insert_end(value);
+    }else{
+        struct node *newnode = (struct node *)malloc(sizeof(struct node));
+        newnode->data = value;
+        newnode->next = nullptr;
+        newnode->prev = nullptr;
+
+        struct node *temp = head;
+
+        for(int i = 1; i < pos - 1; i++){
+            temp = temp->next;
+        }
+        struct node *temp2 = temp->next;
+        temp->next = newnode;
+        temp2->prev = newnode;
+        newnode->prev = temp;
+        newnode->next = temp2;
         count++;
     }
-
-    if (!temp) {
-        cout << "Position out of range.\n";
-        return;
-    }
-
-    if (temp == head) {
-        head = head->next;
-        if (head) head->previous = nullptr;
-        else tail = nullptr;
-    } else if (temp == tail) {
-        tail = tail->previous;
-        tail->next = nullptr;
-    } else {
-        temp->previous->next = temp->next;
-        temp->next->previous = temp->previous;
-    }
-
-    delete temp;
 }
+//Time Complexity for this function is O(n)
 
-// Search for an element
-int DLL::search(int num) {//O(n)
-    struct node* temp = head;
-    int pos = 0;
 
-    while (temp) {
-        if (temp->data == num)
-            return pos;
+
+//Function to Delete at a position
+void doubly::delete_position(){
+    int pos;
+    cout << "Enter posiion to delete:";
+    cin >> pos;
+
+    if(pos < 1 || pos > count){
+        cout << "Warning position exceeds limits" << endl;
+    }else if(pos == 1){
+        delete_beginning();
+    }else if(pos == count + 1){
+        delete_end();
+    }else{
+        struct node *temp = head;
+        struct node *temp2 = tail;
+
+        for(int i = 1;i < pos - 1;i++){
+            temp = temp->next;
+        }
+        struct node *temp3 = temp->next;
+        temp3->next = nullptr;
+        temp3->prev = nullptr;
+        for(int i = count; i > pos + 1; i--){
+            temp2 = temp2->prev;
+        }
+        temp->next = temp2;
+        temp2->prev = temp;
+        count--;
+    }
+}
+//Time Complexity for the function is O(2n)
+
+
+
+//Function to Search for an element
+void doubly::search(){
+    int value;
+    cout << "Enter the value: ";
+    cin >> value;
+    int flag = 0;
+    struct node *temp = head;
+    while(temp != nullptr){
+        if(value == temp->data){
+            flag = 1;
+            break;
+        }
         temp = temp->next;
-        pos++;
     }
-    return -1;
-}
 
-// Display the list
-void DLL::display(){//O(n)
-    struct node* temp = head;
-    if(head == nullptr){
-        cout<<"The List is Empty\n";
-        return;
-    }
-    else{
-        while (temp!=nullptr)
-    {
-        cout<<temp->data<<"->";
-        temp = temp->next;
-    }
-    cout<<"NULL\n";
+    if(flag == 1){
+        cout << "Element found!!" << endl;
+    }else{
+        cout << "Element not found!!" << endl; 
     }
 }
-   
+//Time Complexity for the function is O(n)
+
+

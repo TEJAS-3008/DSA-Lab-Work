@@ -1,77 +1,130 @@
-#include <iostream>
+/*A. Write a separate C++ menu-driven program to implement Queue ADT using an integer array of size 5. Maintain proper boundary conditions and follow good coding practices. The Queue ADT has the following operations,
+
+Enqueue
+Dequeue
+Peek
+Exit
+What is the time complexity of each of the operations? (K4)
+
+*/
+
+#include<iostream>
+#include<vector>
 using namespace std;
 
-#define SIZE 5
 
-class Queue {
-private:
-    int arr[SIZE];
-    int front, rear;
+//Defining the class for Queue
+class queue{
+    private:
+        //Data members
+        vector<int> arr;
+        int front;
+        int rear;
 
-public:
-    Queue() {
-        front = -1;
-        rear = -1;
-    }
-
-    // Enqueue operation
-    void enqueue(int value) {
-        if (rear == SIZE - 1) {
-            cout << "Queue is full!\n";
-            return;
+    public:
+        //CONSTRUCTOR
+        queue(){
+            front = -1;
+            rear = -1;
         }
-        if (front == -1) front = 0;
-        arr[++rear] = value;
-        cout << value << " enqueued.\n";
-    }
-
-    // Dequeue operation
-    void dequeue() {
-        if (front == -1 || front > rear) {
-            cout << "Queue is empty!\n";
-            return;
-        }
-        cout << arr[front] << " dequeued.\n";
-        front++;
-        if (front > rear) front = rear = -1;  // Reset queue when empty
-    }
-
-    // Peek operation
-    void peek() {
-        if (front == -1 || front > rear) {
-            cout << "Queue is empty!\n";
-        } else {
-            cout << "Front element: " << arr[front] << endl;
-        }
-    }
+        bool isempty();//Function to check if queue is Empty
+        bool isfull();//Funtion to check if the queue is Full
+        void enqueue(int val);//Enqueue element into the list
+        void dequeue();//Dequeue element from the list
+        void peek();//Info about first element
+        void display();//Display funtion to see the queue
 };
 
-int main() {
-    Queue q;
-    int choice, value;
 
-    while (true) {
-        cout << "\nQueue Operations:\n";
-        cout << "1. Enqueue\n2. Dequeue\n3. Peek\n4. Exit\n";
-        cout << "Enter choice: ";
+//Main Function for Menu Program
+int main(){
+    int choice;
+    queue obj;
+    while(1){
+        cout << "\n\n<===== MENU =====>" << endl;
+        cout << "1.Enqueue" << endl;
+        cout << "2.Dequeue" << endl;
+        cout << "3.Peek" << endl;
+        cout << "4.Exit" << endl;
+        cout << "Select your choice: " << endl;
         cin >> choice;
-
-        switch (choice) {
+        switch(choice){
             case 1:
-                cout << "Enter value to enqueue: ";
+                int value;
+                cout << "Enter a value to enqueue!" << endl;
                 cin >> value;
-                q.enqueue(value);
+                obj.enqueue(value);
                 break;
             case 2:
-                q.dequeue();
+                obj.dequeue();
                 break;
             case 3:
-                q.peek();
+                obj.peek();
                 break;
             case 4:
-                cout << "Exiting...\n";
-                return 0;
+                cout << "Exiting..." << endl;
+                return 0; 
             default:
-                cout << "Invalid choice!\n";}
+                cout << "The selelcted choice cease to Exist\nPlease Try Again" << endl;
         }
+    }
+}
+
+
+
+//DEFINING THE FUNCTION
+
+bool queue::isempty(){
+    if(rear == -1 && front == -1){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+bool queue::isfull(){
+    if(rear >= 4){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+void queue::enqueue(int val){
+    if(isfull()){
+        cout << "The queue is Full!, Dequeue and Try Again!!" << endl;
+    }else{
+        arr.push_back(val);
+        rear++;
+    }
+    display();
+}
+
+void queue::display(){
+    for(int i = 0;i <= rear;i++){
+        cout << arr[i]<< " | ";
+    }
+}
+
+void queue::dequeue(){
+    if(isempty()){
+        cout << "The queue is empty! Enqueue and Try Again!!" << endl;
+    }else{
+        int temp = arr[0];
+        for(int i = 0;i < rear; i++){
+            arr[i] = arr[i + 1];
+        }
+        rear--;
+        cout << temp << " Dequeued from the queue!!" << endl; 
+        display();
+    }
+}
+
+
+void queue::peek(){
+    if(isempty()){
+        cout << "The queue is empty!" << endl;
+    }else{
+        cout << "Front in the queue is " << arr[0] << endl;
+    }
 }

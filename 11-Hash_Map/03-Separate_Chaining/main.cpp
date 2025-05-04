@@ -1,134 +1,129 @@
-#include <iostream>
+#include<iostream>
+#include<vector>
 using namespace std;
 
 #define SIZE 10
 
-class HashTable {
-private:
-    class Node {
-    public:
-        int data;
-        Node* next;
-        Node(int val) {
-            data = val;
-            next = nullptr;
+
+class hashtable{
+    private:
+
+        struct slot{
+            vector<int> v;
+        };
+
+        slot table[SIZE];
+        
+        int hashfunction(int key){
+            return key % SIZE;
         }
-    };
 
-    Node* table[SIZE];
-    int hashFunction(int key);
-
-public:
-    HashTable();
-    void insert(int key);        // Time Complexity: O(1) average, O(n) worst case (if all keys collide)
-    void remove(int key);        // Time Complexity: O(1) average, O(n) worst case (if all keys collide)
-    void search(int key);       // Time Complexity: O(1) average, O(n) worst case (if all keys collide)
-    void display();             // Time Complexity: O(SIZE * n) where n is the average chain length
+    public:
+        void insert(int key);
+        void display();
+        void search(int key);
+        void remove(int key);
 };
 
-int main() {
-    HashTable ht;
-    int choice, key;
 
-    while (true) {
-        cout << "\nMENU:\n";
-        cout << "1. Insert\n2. Delete\n3. Search\n4. Exit\n";
+
+
+int main(){
+    int choice;
+    int value;
+    hashtable obj;
+
+    while(1){
+        cout << "\n<====== MENU ======>" << endl;
+        cout << "1.Insert" << endl;
+        cout << "2.Delete" << endl;
+        cout << "3.Search" << endl;
+        cout << "4.Display" << endl;
+        cout << "5.Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
-
-        switch (choice) {
+        switch(choice){
             case 1:
-                cout << "Enter number to insert: ";
-                cin >> key;
-                ht.insert(key);
+                cout << "Enter the value for insertion: ";
+                cin >> value;
+                obj.insert(value);
                 break;
             case 2:
-                cout << "Enter number to delete: ";
-                cin >> key;
-                ht.remove(key);
+                cout << "Enter the value to delete: ";
+                cin >> value;
+                obj.remove(value);
                 break;
             case 3:
-                cout << "Enter number to search: ";
-                cin >> key;
-                ht.search(key);
+                cout << "Enter the value to search: ";
+                cin >> value;
+                obj.search(value);
                 break;
             case 4:
+                obj.display();
+                break;
+            case 5:
                 cout << "Exiting..." << endl;
                 return 0;
             default:
-                cout << "Invalid choice. Try again.\n";
+                cout << "Selected choice cease to Exist\nPlease Try Again" << endl;
         }
-
-        ht.display();  // Show table after each operation
-    }
-
-    return 0;
-}
-
-
-HashTable::HashTable() {        // Time Complexity: O(SIZE) → Initializes all buckets to nullptr
-    for (int i = 0; i < SIZE; ++i) {
-        table[i] = nullptr;
     }
 }
 
-int HashTable::hashFunction(int key) {  // Time Complexity: O(1) → Simple modulo operation
-    return key % SIZE;
+
+
+
+void hashtable::insert(int key){
+    int index = hashfunction(key);
+    table[index].v.push_back(key);
+    cout << "Inserted element " << key << endl;
 }
 
-void HashTable::insert(int key) {       // Time Complexity: O(1) average, O(n) worst case (if all keys collide)
-    int index = hashFunction(key);
-    Node* newNode = new Node(key);
-    newNode->next = table[index];
-    table[index] = newNode;
-    cout << "Inserted " << key << " at index " << index << endl;
-}
 
-void HashTable::remove(int key) {       // Time Complexity: O(1) average, O(n) worst case (if all keys collide)
-    int index = hashFunction(key);
-    Node* curr = table[index];
-    Node* prev = nullptr;
-
-    while (curr != nullptr) {
-        if (curr->data == key) {
-            if (prev == nullptr)
-                table[index] = curr->next;
-            else
-                prev->next = curr->next;
-
-            delete curr;
-            cout << "Deleted " << key << " from index " << index << endl;
-            return;
+void hashtable::display(){
+    for(int i = 0;i < SIZE;i++){
+        cout << i;
+        for(int each : table[i].v){
+            cout << " ---> " << each;
         }
-        prev = curr;
-        curr = curr->next;
+        cout << endl;
     }
-    cout << "Key " << key << " not found." << endl;
 }
 
-void HashTable::search(int key) {       // Time Complexity: O(1) average, O(n) worst case (if all keys collide)
-    int index = hashFunction(key);
-    Node* curr = table[index];
 
-    while (curr != nullptr) {
-        if (curr->data == key) {
-            cout << "Found " << key << " at index " << index << endl;
-            return;
+void hashtable::search(int key){
+    int index = hashfunction(key);
+    for(int i = 0;i < table[index].v.size() - 1;i++){
+        if(table[index].v[i] == key){
+            cout << "Element found at chain " << index << " at index " << i + 1 << endl;
+            return; 
         }
-        curr = curr->next;
     }
-    cout << "Key " << key << " not found." << endl;
+
+    cout << "Element not found in any chains !!" << endl;
 }
 
-void HashTable::display() {             // Time Complexity: O(SIZE * n) where n is the average chain length
-    cout << "\nHash Table:\n";
-    for (int i = 0; i < SIZE; ++i) {
-        cout << "Index " << i << ": ";
-        Node* curr = table[i];
-        while (curr != nullptr) {
-            cout << curr->data << " -> ";
-            curr = curr->next;
+
+void hashtable::remove(int key){
+    int chain = hashfunction(key);
+    int chainsize = table[chain].v.size();
+    int keyindex = -1;
+
+    for(int i = 0;i < chainsize;i++){
+        if(table[chain].v[i] == key){
+            keyindex = i;
+            break;
         }
-        cout << "NULL" << endl;
+    }
+
+    if(keyindex == -1){
+        cout << "The Element is not in the hashtable" << endl;
+        return;
+    }else{
+        for(int i = keyindex;i < chainsize - 1;i++){
+            table[chain].v[i] = table[chain].v[i + 1];
+        }
+
+        table[chain].v.erase(table[chain].v.end() - 1);
     }
 }

@@ -1,92 +1,126 @@
+/*C. Write a separate C++ menu-driven program to implement Queue ADT using an integer-linked list. Maintain proper boundary conditions and follow good coding practices. The Queue ADT has the following operations,
+
+Enqueue
+Dequeue
+Peek
+Exit*/
+
 #include <iostream>
 using namespace std;
 
-class Queue {
-private:
-    // Structure for linked list node
-    struct Node {
-        int data;
-        Node* next;
-    };
+//Class for implementing Queue using linked list
+class queue{
+    private:
+        //Data Memebers
+        struct node{
+            int data;
+            struct node *link;
+        }*front, *rear;
 
-    struct Node* front;   // Pointer to the front of the queue
-    struct Node* rear;    // Pointer to the rear of the queue
-
-public:
-    Queue() {
-        front = nullptr;
-        rear = nullptr;
-    }
-
-    // Enqueue operation
-    void enqueue(int value) {
-        Node* newNode = new Node{value, nullptr};
-
-        if (rear == nullptr) {
-            front = rear = newNode;
-        } else {
-            rear->next = newNode;
-            rear = newNode;
+    public:
+        //Constructor
+        queue(){
+            front = nullptr;
+            rear = nullptr;
         }
-
-        cout << value << " enqueued.\n";
-    }
-
-    // Dequeue operation
-    void dequeue() {
-        if (front == nullptr) {
-            cout << "Queue is empty!\n";
-            return;
-        }
-
-        Node* temp = front;
-        front = front->next;
-
-        if (front == nullptr) {
-            rear = nullptr;  // Reset when queue becomes empty
-        }
-
-        cout << temp->data << " dequeued.\n";
-        delete temp;
-    }
-
-    // Peek operation
-    void peek() {
-        if (front == nullptr) {
-            cout << "Queue is empty!\n";
-        } else {
-            cout << "Front element: " << front->data << endl;
-        }
-    }
+        void Enqueue(int val);//FUnction to Enqueue an element
+        void Dequeue();//Function to Dequeue an element
+        void peek();//Function to show the Element at front
+        void display();//Function to dispaly the Queue
+        bool isempty();//Function to check is the Queue is Empty
 };
 
-int main() {
-    Queue q;
-    int choice, value;
 
-    while (true) {
-        cout << "\nQueue Operations:\n";
-        cout << "1. Enqueue\n2. Dequeue\n3. Peek\n4. Exit\n";
-        cout << "Enter choice: ";
+//Main code Block for Menu Program
+int main(){
+    int choice;
+    queue obj;// creating an Instance of a class named obj
+    while(1){
+        cout << "\n\n<===== MENU =====>" << endl;
+        cout << "1.Enqueue" << endl;
+        cout << "2.Dequeue" << endl;
+        cout << "3.Peek" << endl;
+        cout << "4.Exit" << endl;
+        cout << "Select an option:";
         cin >> choice;
 
-        switch (choice) {
+        switch(choice){
             case 1:
+                //Asking user for val to Enqueue in the Queue
+                int val;
                 cout << "Enter value to enqueue: ";
-                cin >> value;
-                q.enqueue(value);
+                cin >> val;
+                obj.Enqueue(val);
                 break;
             case 2:
-                q.dequeue();
+                obj.Dequeue();
                 break;
             case 3:
-                q.peek();
+                obj.peek();
                 break;
             case 4:
-                cout << "Exiting...\n";
+                cout << "Exiting...." << endl;
                 return 0;
             default:
-                cout << "Invalid choice!\n";
+                cout << "The selected choice Cease to Exist!!Please Try Again" << endl;
         }
+    }
+}
+
+
+//Defining The Member Functions
+
+bool queue::isempty(){//Defining the Factor for boundary Condition
+    if(front == nullptr){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+void queue::Enqueue(int val){
+    if(isempty()){//Boundary conditions
+        struct node * newnode = (struct node*)malloc(sizeof(struct node));
+        newnode->data = val;
+        newnode->link = nullptr;
+        front = newnode;
+        rear = newnode;
+    }else{
+        struct node * newnode = (struct node*)malloc(sizeof(struct node));
+        newnode->data = val;
+        newnode->link = nullptr;
+        struct node *temp = rear;
+        temp->link = newnode;
+        rear = newnode;
+    }
+    display();
+}
+
+void queue::display(){
+    struct node *temp = front;
+    cout << "QUEUE:)>    ";
+    while(temp != nullptr){
+        cout << temp->data << " | ";
+        temp = temp->link;
+    }
+}
+
+void queue::Dequeue(){
+    if(isempty()){//Boundary conditions
+        cout << "The queue is Empty! Enqueue and Try Again!!" << endl;
+    }else{
+        struct node *temp = front;
+        front = temp->link;
+        temp->link = nullptr;
+        display();
+    }
+}
+
+void queue::peek(){
+    if(isempty()){//Boundary conditions
+        cout << "The queue is Empty!" << endl;
+    }else{
+        struct node *temp = front;
+        cout << "Front Element: " << temp->data << endl;
     }
 }

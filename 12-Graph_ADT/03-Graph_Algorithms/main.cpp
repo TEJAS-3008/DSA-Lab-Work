@@ -1,214 +1,191 @@
+/*
+            To implement the following three algorithms using a menu driven program
+                                1.Prim's Algorithm
+                                2.Kruskal's Algorithm
+                                3.Dijikstra's Algorithm
+*/
+
 #include <iostream>
 #include <vector>
-#include <climits>
-#include "heap.h"
+#include <queue>
+#include <algorithm>
+#include <limits>
+
 using namespace std;
 
-class Graph{
-    private:
-        vector <vector <int>> matrix;
-        int n;                          //vertices
-    public:
-        Graph(int vertices){
-            n=vertices;
-            matrix.resize(n, vector<int>(n, 0));
-        }
-        void delete1(int u,int v){
-            if (n>u && n>v){
-                matrix[u][v]=0;
-                matrix[v][u]=0;
-            }
-        }
-        void insert(int u,int v,int weight){
-            if (n>u && n>v){
-                matrix[u][v]=weight;
-                matrix[v][u]=weight;
-            }
-        }
-        void display(){
-            cout<<"\n\nAdjacency Matrix: \n";
-            for (int i=0;i<n;i++){
-                for (int j=0;j<n;j++){
-                    cout<<matrix[i][j]<<" ";
-                }
-                cout<<"\n";
-            }
-        }
+#define INF INT_MAX
+#define MAX_DIST 1000000  // Define a large number instead of INF
 
-        void prims(){
-            cout<<"\n";
-            heap h1(n*n);
-            vector <int> visited(n,0);
-            node newnode;
-            newnode.weight=0;
-            newnode.vertex=0;
-            newnode.parent=-1;
-            h1.insert(newnode);
-            int ttlweight=0;
-            while(h1.getCurr()!=0){
-                node rootNode=h1.delete1();
-                int rNvert=rootNode.vertex;     //vertex of the root node which is deleted
+class Edge {
+public:
+    int src, dest, weight;
+    Edge(int s, int d, int w);
+};
 
-                if (visited[rNvert]==1){
-                    continue;
-                }
-                visited[rNvert]=1;
+class Graph {
+private:
+    int V;
+    vector<vector<pair<int, int>>> adjList;
+    vector<Edge> edges;
 
-                if (rootNode.parent!=-1){
-                    cout<<"Edge: "<<rootNode.parent<<" - "<<rNvert<<" | "<<"Weight: "<<rootNode.weight<<endl;
-                    ttlweight+=rootNode.weight;
-                } 
-
-                for (int i=0;i<n;i++){
-                    if (matrix[rNvert][i]!=0 && visited[i]==0){
-                        node newnode;
-                        newnode.weight=matrix[rNvert][i];
-                        newnode.vertex=i;
-                        newnode.parent=rNvert;
-                        h1.insert(newnode);
-                    }
-                }
-            }
-            cout<<"Total weight: "<<ttlweight;
-        }
-
-        void kruskals(){
-            cout<<"\n";
-            int visited[n];
-            int ttlweight=0;
-            for (int i=0;i<n;i++){
-                visited[i]=0;
-            }
-            heap h3(n*n);
-            for (int i=0;i<n;i++){
-                for (int j=0;j<n;j++){
-                    if(matrix[i][j]!=0 ){
-                        node newnode;
-                        newnode.weight=matrix[i][j];
-                        newnode.parent=i;
-                        newnode.vertex=j;
-                        h3.insert(newnode);
-                    }
-                }
-            }
-
-            while(h3.getCurr()!=0){
-                node rootNode=h3.delete1();
-                if (!(visited[rootNode.parent]==1 && visited[rootNode.vertex]==1)){
-                    cout<<"Edge: "<<rootNode.parent<<" - "<<rootNode.vertex<<" | "<<"Weight: "<<rootNode.weight<<endl;
-                    visited[rootNode.parent]=1;
-                    visited[rootNode.vertex]=1;
-                    ttlweight+=rootNode.weight;
-                }
-            }
-            cout<<"Total weight: "<<ttlweight;
-        }
-
-        void dijikstra(int src,int dest){
-            vector <int> dist(n,INT_MAX);
-            heap h2(n*n);
-            node newnode;
-            newnode.vertex=src;
-            newnode.weight=0;
-            dist[0]=0;
-
-            h2.insert(newnode);
-
-            while(h2.getCurr()!=0){
-                node rootNode=h2.delete1();
-                int rNvert=rootNode.vertex;
-
-                for (int i=0;i<n;i++){
-                    if (matrix[rNvert][i]!=0 && dist[rNvert]+matrix[rNvert][i]<dist[i]){
-                        node newnode;
-                        newnode.vertex=i;
-                        newnode.weight=matrix[rNvert][i]+dist[rNvert];
-                        h2.insert(newnode);
-                        dist[i]=dist[rNvert]+matrix[rNvert][i];
-                    }
-                }
-            }
-            cout<<"\nDistance between all nodes from "<<src<<":"<<endl;
-            cout<<"src - dest"<<endl;
-            for (int i=0;i<n;i++){
-                if (i==src){
-                    continue;
-                }
-                cout<<"\n"<<src<<" - "<<dist[i]<<endl;
-            }
-            cout<<"\nDistance between "<<src<<" and "<<dest<<" is "<<dist[dest]<<endl;
-            
-        }
-
+public:
+    Graph(int vertices);
+    void addEdge(int u, int v, int w);
+    void display();
+    void prims();
+    int findParent(int u, vector<int> &parent);
+    void kruskal();
+    void dijkstra(int src);
 };
 
 int main() {
-    int choice, u, v, vertices, weight;
-    int exitFlag = 0;
-    cout << "Enter number of vertices: ";
-    cin >> vertices;
+    int V, choice;
+    cin >> V;
 
-    Graph g1(vertices);
-
-    while (!exitFlag) {
-        cout << "\n==== Graph Menu ====\n";
-        cout << "1. Insert Edge\n";
-        cout << "2. Delete Edge\n";
-        cout << "3. Prim's Algorithm (MST)\n";
-        cout << "4. Kruskal's Algorithm (MST)\n";
-        cout << "5. Dijkstra's Algorithm (Shortest Path)\n";
-        cout << "6. Display Adjacency Matrix\n";
-        cout << "7. Exit\n";
-        cout << "=====================\n";
-        cout << "Enter your choice: ";
+    Graph g(V);
+    while (true) {
+        cout << "\nMenu:\n"
+             << "1. Add Edge\n"
+             << "2. Display Graph\n"
+             << "3. Prim’s Algorithm\n"
+             << "4. Kruskal’s Algorithm\n"
+             << "5. Dijkstra’s Algorithm\n"
+             << "6. Exit\n"
+             << "Enter your choice: ";
         cin >> choice;
 
-        switch (choice) {
-            case 1:
-                cout << "Enter (u v weight): ";
-                cin >> u >> v >> weight;
-                g1.insert(u, v, weight);
-                break;
-
-            case 2:
-                cout << "Enter (u v): ";
-                cin >> u >> v;
-                g1.delete1(u, v);
-                break;
-
-            case 3:
-                cout << "\nPrim's Algorithm Output:\n";
-                g1.prims();
-                break;
-
-            case 4:
-                cout << "\nKruskal's Algorithm Output:\n";
-                g1.kruskals();
-                break;
-
-            case 5: {
-                int src, dest;
-                cout << "Enter source vertex: ";
-                cin >> src;
-                cout << "Enter destination vertex: ";
-                cin >> dest;
-                g1.dijikstra(src, dest);
-                break;
-            }
-
-            case 6:
-                g1.display();
-                break;
-
-            case 7:
-                exitFlag = 1;
-                cout << "Exiting program.\n";
-                break;
-
-            default:
-                cout << "Invalid choice! Please try again.\n";
+        if (choice == 1) {
+            int u, v, w;
+            cin >> u >> v >> w;
+            g.addEdge(u, v, w);
+        } else if (choice == 2) {
+            g.display();
+        } else if (choice == 3) {
+            g.prims();
+        } else if (choice == 4) {
+            g.kruskal();
+        } else if (choice == 5) {
+            int src;
+            cin >> src;
+            g.dijkstra(src);
+        } else if (choice == 6) {
+            break;
         }
     }
 
     return 0;
+}
+
+Edge::Edge(int s, int d, int w) : src(s), dest(d), weight(w) {}
+
+Graph::Graph(int vertices) {
+    V = vertices;
+    adjList.resize(V);
+}
+
+void Graph::addEdge(int u, int v, int w) {
+    adjList[u].emplace_back(v, w);
+    adjList[v].emplace_back(u, w);
+    edges.emplace_back(u, v, w);
+}
+
+void Graph::display() {
+    for (int i = 0; i < V; ++i) {
+        cout << i << " -> ";
+        for (auto& pair : adjList[i]) {  // Iterate over the adjacency list
+            int v = pair.first;   // Destination vertex
+            int w = pair.second;  // Edge weight
+            cout << "(" << v << ", " << w << ") ";
+        }
+        cout << "\n";
+    }
+}
+
+void Graph::prims() {
+    vector<int> key(V, MAX_DIST), parent(V, -1);
+    vector<bool> inMST(V, false);
+    key[0] = 0;
+
+    for (int count = 0; count < V - 1; ++count) {
+        int u = -1;
+        // Find the vertex with the minimum key value that is not yet included in MST
+        for (int i = 0; i < V; ++i)
+            if (!inMST[i] && (u == -1 || key[i] < key[u]))
+                u = i;
+
+        if (u == -1) {
+            cout << "The graph is disconnected!" << endl;
+            return;
+        }
+
+        inMST[u] = true;
+
+        for (auto& pair : adjList[u]) {
+            int v = pair.first;   // Destination vertex
+            int w = pair.second;  // Edge weight
+            if (!inMST[v] && w < key[v]) {
+                key[v] = w;
+                parent[v] = u;
+            }
+        }
+    }
+
+    cout << "Minimum Spanning Tree (Prim's):\n";
+    for (int i = 1; i < V; ++i)
+        cout << parent[i] << " - " << i << " (Weight: " << key[i] << ")\n";
+}
+
+int Graph::findParent(int u, vector<int> &parent) {
+    if (parent[u] != u)
+        parent[u] = findParent(parent[u], parent);
+    return parent[u];
+}
+
+void Graph::kruskal() {
+    sort(edges.begin(), edges.end(), [](Edge a, Edge b) {
+        return a.weight < b.weight;
+    });
+
+    vector<int> parent(V);
+    for (int i = 0; i < V; ++i)
+        parent[i] = i;
+
+    cout << "Minimum Spanning Tree (Kruskal's):\n";
+    for (Edge &e : edges) {
+        int pu = findParent(e.src, parent);
+        int pv = findParent(e.dest, parent);
+        if (pu != pv) {
+            cout << e.src << " - " << e.dest << " (Weight: " << e.weight << ")\n";
+            parent[pu] = pv;
+        }
+    }
+}
+
+void Graph::dijkstra(int src) {
+    vector<int> dist(V, MAX_DIST);
+    dist[src] = 0;
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+    pq.emplace(0, src);
+
+    while (!pq.empty()) {
+        int u = pq.top().second;
+        pq.pop();
+
+        for (auto& pair : adjList[u]) {
+            int v = pair.first;
+            int w = pair.second;
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                pq.emplace(dist[v], v);
+            }
+        }
+    }
+
+    cout << "Shortest paths from source " << src << ":\n";
+    for (int i = 0; i < V; ++i) {
+        if (dist[i] == MAX_DIST)
+            cout << "No path to " << i << "\n";
+        else
+            cout << "Distance to " << i << " = " << dist[i] << "\n";
+    }
 }

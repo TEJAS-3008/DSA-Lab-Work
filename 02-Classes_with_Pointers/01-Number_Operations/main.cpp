@@ -1,137 +1,194 @@
-//Menudriven program to determine wheater a number is palindrome,armstrong or perfect number.
-#include<cstdio>
-#include<cstdlib>
-#include<cmath>
-int digits(int*);
-int ispalindrome(int*);
-int isarmstrong(int*,int*);
-int isperfect(int*);
+/*Write a C++ menu-driven program to determine whether a number is a Palindrome, Armstrong, or Perfect Number. Normal variable and array declarations are not allowed. Utilize dynamic memory allocation (DMA). Design proper functions, maintain boundary conditions, and follow coding best practices. The menu is as follows,
 
+a. Palindrome
+b. Armstrong Number
+c. Perfect Number
+d. Exit
 
-int main(){
-int*num = (int*)malloc(sizeof(int));
-*num = 0;
-    
-int* digit = (int*)malloc(sizeof(int));
+files to be submitted in pointer cpp file*/
 
-    while(1){
-        int* choice = (int*)malloc(sizeof(int));
-        printf("           MENU\n");
-        printf("1. Palindrome\n");
-        printf("2. Armstrong\n");
-        printf("3. Perfect\n");
-        printf("4. Exit\n");
-        printf("\nEnter The Choice:");
-        scanf("%d",choice);
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
 
-        switch (*choice)
-        {
-        case 1:
-        printf("Enter The Number : ");
-        scanf("%d",num);
-            if(ispalindrome(num)==*num){
-                printf("The Given Number %d is a Palindrome\n",*num);
-            }
-            else{
-                 printf("The Given Number %d is NOT a Palindrome\n",*num);
-            }
-            break;
-        case 2:
-        printf("Enter The Number : ");
-        scanf("%d",num);
-        *digit = digits(num);
-             if(isarmstrong(num,digit)==*num){
-                printf("The Given Number %d is a Armstrong Number\n",*num);
-            }
-            else{
-                 printf("The Given Number %d is NOT a Armstrong Number\n",*num);
-            }
-            break;
-        case 3:
-        printf("Enter The Number : ");
-        scanf("%d",num);
-             if(isperfect(num)){
-                printf("The Given Number %d is a Perfect Number\n",*num);
-            }
-             else{
-                printf("The Given Number %d is NOT a Perfect Number\n",*num);
-                }
-            break;
-        case 4:
-            return 0;
-            break;
-        default:
-            printf("INVALID CHOICE\n");
-            break;
-        }
-    }
-    return 0;
-}
+using namespace std;
 
-int digits(int* ptr){
-    int* temp = (int*)malloc(sizeof(int));
-    int* num = (int*)malloc(sizeof(int));
-    *num = 0;
-    *temp = *ptr;
-    if(*temp == 0){
+// Function prototypes
+void check_Palindrome(int* num);
+void check_Armstrong(int* num);
+void check_Perfect(int* num);
+int count_digits(int* num);
+
+int main() {
+    // Dynamically allocating memory for number input
+    int* number = (int*)malloc(sizeof(int));
+
+    if (!number) {
+        cout << "Memory allocation failed!" << endl;
         return 1;
     }
-    else{
-    while (*temp > 0)
-    {
-        *temp = (*temp)/10;
-        (*num)++;
-    }
-    return *num;}
-}
 
-int ispalindrome(int* ptr){
+    cout << "Enter the number: ";
+    cin >> *number;
 
-    int* temp = (int*)malloc(sizeof(int));
-    *temp = *ptr;
-    int* temp1 = (int*)malloc(sizeof(int));
-    int* reverse = (int*)malloc(sizeof(int));
-    *reverse =0;
-     while (*temp != 0) {
-        *temp1 = *temp % 10;               
-        *reverse = (*reverse) * 10 + *temp1;  
-        (*temp) /= 10;                          
+    int* selection = (int*)malloc(sizeof(int));
+
+    if (!selection) {
+        cout << "Memory allocation failed!" << endl;
+        free(number);
+        return 1;
     }
 
-    return *reverse;
-}
+    while (true) {
+        cout << "\n<===== MENU =====>\n";
+        cout << "1. Palindrome\n";
+        cout << "2. Armstrong Number\n";
+        cout << "3. Perfect Number\n";
+        cout << "4. Exit\n";
+        cout << "Select a choice: ";
+        cin >> *selection;
+        cout << endl;
 
-int isarmstrong(int*ptr,int*ptr1){
-    int*i = (int*)malloc(sizeof(int));
-    int* digit = (int*)malloc(sizeof(int));
-    int* sum = (int*)malloc(sizeof(int));
-    int* temp = (int*)malloc(sizeof(int));
-    *temp = *ptr;
-    *sum = 0;
-    for (*i = 0; *i < *ptr1; (*i)++)
-    {
-        *digit = (*temp)%10;
-        *sum = *sum + pow(*digit,*ptr1);
-        (*temp) /=10;
-    }
-    return *sum;
-}
-
-int isperfect(int* ptr){
-
-      int * sum = (int*)malloc(sizeof(int));
-      *sum = 0;
-      int * num = (int*)malloc(sizeof(int));
-      *num = *ptr;\
-       int * i = (int*)malloc(sizeof(int));
-
-    for (*i = 1; *i <= (*num) / 2; (*i)++) {
-        if ((*num) % (*i) == 0) {
-            (*sum) += (*i);
+        switch (*selection) {
+            case 1:
+                check_Palindrome(number);
+                break;
+            case 2:
+                check_Armstrong(number);
+                break;
+            case 3:
+                check_Perfect(number);
+                break;
+            case 4:
+                cout << "Exiting program.\n";
+                free(number);
+                free(selection);
+                return 0;
+            default:
+                cout << "Selected option does not exist!!\nPlease Try Again\n";
         }
     }
-
-
-    return ((*sum) == (*num));
 }
 
+// Function to check if a number is a palindrome
+void check_Palindrome(int* num) {
+    int* original = (int*)malloc(sizeof(int));
+    int* reversed_num = (int*)malloc(sizeof(int));
+    int* digit = (int*)malloc(sizeof(int));
+
+    if (!original || !reversed_num || !digit) {
+        cout << "Memory allocation failed!" << endl;
+        return;
+    }
+
+    *original = *num;
+    *reversed_num = 0;
+    
+    while (*num > 0) {
+        *digit = (*num) % 10;
+        *reversed_num = (*reversed_num) * 10 + (*digit);
+        *num /= 10;
+    }
+
+    if (*reversed_num == *original) {
+        cout << *original << " is a Palindrome" << endl;
+    } else {
+        cout << *original << " is not a Palindrome" << endl;
+    }
+
+    free(original);
+    free(reversed_num);
+    free(digit);
+}
+
+// Function to check if a number is an Armstrong number
+void check_Armstrong(int* num) {
+    int* original = (int*)malloc(sizeof(int));
+    int* sum = (int*)malloc(sizeof(int));
+    int* digit = (int*)malloc(sizeof(int));
+
+    if (!original || !sum || !digit) {
+        cout << "Memory allocation failed!" << endl;
+        return;
+    }
+
+    *original = *num;
+    *sum = 0;
+    int* count = (int*)malloc(sizeof(int));
+    *count = count_digits(num);
+
+    int* temp = (int*)malloc(sizeof(int));
+    *temp = *num;
+
+    while (*temp > 0) {
+        *digit = *temp % 10;
+        *sum += pow(*digit, *count);
+        *temp /= 10;
+    }
+
+    if (*sum == *original) {
+        cout << *original << " is an Armstrong number" << endl;
+    } else {
+        cout << *original << " is not an Armstrong number" << endl;
+    }
+
+    free(original);
+    free(sum);
+    free(digit);
+    free(count);
+    free(temp);
+}
+
+// Function to check if a number is a perfect number
+void check_Perfect(int* num) {
+    int* sum = (int*)malloc(sizeof(int));
+    int* i = (int*)malloc(sizeof(int));
+
+    if (!sum || !i) {
+        cout << "Memory allocation failed!" << endl;
+        return;
+    }
+
+    *sum = 0;
+    *i = 1;
+
+    while (*i < *num) {
+        if (*num % *i == 0) {
+            *sum += *i;
+        }
+        (*i)++;
+    }
+
+    if (*sum == *num) {
+        cout << *num << " is a Perfect number" << endl;
+    } else {
+        cout << *num << " is not a Perfect number" << endl;
+    }
+
+    free(sum);
+    free(i);
+}
+
+// Function to count the number of digits in a number
+int count_digits(int* num) {
+    int* count = (int*)malloc(sizeof(int));
+    int* temp = (int*)malloc(sizeof(int));
+
+    if (!count || !temp) {
+        cout << "Memory allocation failed!" << endl;
+        return 0;
+    }
+
+    *count = 0;
+    *temp = *num;
+
+    while (*temp > 0) {
+        (*count)++;
+        *temp /= 10;
+    }
+
+    int result = *count;
+    free(count);
+    free(temp);
+    return result;
+}

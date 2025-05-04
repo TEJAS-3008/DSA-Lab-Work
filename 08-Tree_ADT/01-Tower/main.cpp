@@ -1,54 +1,46 @@
+
+
 #include<iostream>
-#include <algorithm>
+#include<vector>
+#include<algorithm>
+
 using namespace std;
-void sortArray(int arr[], int numElements) {
-        std::sort(arr + 1, arr + numElements);
-}
-int check(int  arr[],int  n){
-    int temp = arr[0];
-    int  i = 1;
-    for (; i < n; i++)
-    {
-        if(arr[0]<arr[i]){
-            return i;
-        }
-        
-    }
-    return 0;
-    
-}
-int sum(int  arr[],int  n,int  i){
-    if (i == 0){
-        return arr[0];
-    }
-    while (i<n)
-    {
-        arr[0] = (arr[0] + arr[i] + 1)/2;
-        i++;
-    }
-    return arr[0];
-    
-}
+
+int solve(vector<int>& a, int size);
+
+void sort(vector<int>& a, int size);
+
 int main(){
     int t;
-   int  n,temp;
-   cin >> t;
-   while(t>0){
-   cin >> n;
-   temp = n;
-    int  arr[n];
-    int i = 0;
-    while(n>0){
-        cin >> arr[i];
-        i++;
-        n--;
-    }
-    n = temp;
-    sortArray(arr,n);
-    cout<<sum(arr,n,check(arr,n))<<"\n";
-    
-   t--;
-   } 
+    cin >> t;
+    while(t--){
+        vector<int> arr;
+        int n;
+        cin >> n;
+        int max = 0;
+        for(int i = 0;i < n;i++){
+            int e;
+            cin >> e;
+            arr.push_back(e);
+        }
+        sort(arr, arr.size());
 
-    return 0;
+        cout << solve(arr, n) << endl;
+    }    
+}
+
+
+int solve(vector<int>& a, int size){
+    for(int i = 0;i < size; i++){
+        while(a[0] < a[i]){
+            a[0] = a[0] + 1;
+            a[i] = a[i] - 1;
+        }
+    }
+    int max_blocks = a[0];
+    return max_blocks;
+}
+
+void sort(vector<int>& a, int size){
+    sort(a+1, a.size() + a);
 }

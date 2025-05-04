@@ -1,147 +1,156 @@
-#include <iostream>
-using namespace std;
+/* menu-driven C++ program to implement a Hash ADT using Linear Probing, followed by the time complexity analysis of each operation.
+with operations:
+    1.Insert
+    2.Delete
+    3.Search
+    4.Display
+    5.Exit*/
 
-#define size 10
 
-class Hash {
-private:
-    int table[size];
-    bool check[size];
-
-public:
-    Hash();
-
-    int index(int key);
-
-    void insert(int key);          // Average: O(1), Worst: O(n)
-    void display();                // O(n)
-    void search(int key);          // Average: O(1), Worst: O(n)
-    void del(int key);             // Average: O(1), Worst: O(n)
-};
-
-int main() {
-    Hash temp;
-    int choice;
-
-    while (1) {
-        cout << "\nMENU\n";
-        cout << "1. Insert\n";
-        cout << "2. Delete\n";
-        cout << "3. Search\n";
-        cout << "4. Display\n";
-        cout << "5. Exit\n";
-        cout << "Enter Your Choice: ";
-        cin >> choice;
-
-        switch (choice) {
-            case 1: {
-                int num;
-                cout << "Enter Number You Want to Insert: ";
-                cin >> num;
-                temp.insert(num);
-                break;
+    #include<iostream>
+    #include<vector>
+    using namespace std;
+    
+    const int SIZE = 10;
+    
+    
+    
+    class hashtable{
+        private:
+            struct slot{
+                int value;
+                bool isoccupied;
+                bool isdeleted;
+            };
+    
+            slot table[SIZE];
+    
+            int hashfunction(int key){
+                return key % SIZE;
             }
-            case 2: {
-                int num;
-                cout << "Enter Number You Want to Delete: ";
-                cin >> num;
-                temp.del(num);
-                break;
+    
+        public:
+            hashtable(){
+                for(int i = 0;i < SIZE;i++){
+                    table[i].isoccupied = false;
+                    table[i].isdeleted = false;
+                }
             }
-            case 3: {
-                int num;
-                cout << "Enter Number You Want to Search: ";
-                cin >> num;
-                temp.search(num);
-                break;
+    
+            void insert(int val);
+            void display();
+            void remove(int key);
+            void search(int key);
+    
+    };
+    
+    
+    
+    
+    int main(){
+        int choice;
+        int val;
+        hashtable obj;
+        while(1){
+            cout << "\n<======== MENU ========>" << endl;
+            cout << "1.Insert " << endl;
+            cout << "2.Delete" << endl;
+            cout << "3.Search" << endl;
+            cout << "4.Display" << endl;
+            cout << "5.Exit" << endl;
+            cout << "Enter your choice: ";
+            cin >> choice;
+            switch(choice){
+                case 1:
+                    cout << "Enter a value to insert: ";
+                    cin >> val;
+                    obj.insert(val);
+                    break;
+                case 2:
+                    cout << "Enter a value to remove: ";
+                    cin >> val;
+                    obj.remove(val);
+                    break;
+                case 3:
+                    cout << "Enter the value to search: ";
+                    cin >> val;
+                    obj.search(val);
+                    break;
+                case 4:
+                    obj.display();
+                    break;
+                case 5:
+                    cout << "Exiting...." << endl;
+                    return 0;
+                default:
+                    cout << "Selected choice cease to exist\nPlease Try Again" << endl;
             }
-            case 4:
-                temp.display();
-                break;
-            case 5:
-                cout << "Exiting ..." << endl;
-                return 0;
-            default:
-                cout << "Invalid Input. TRY again." << endl;
         }
     }
-
-    return 0;
-}
-
-Hash::Hash() {                     // O(n)
-    for (int i = 0; i < size; i++) {
-        check[i] = false;
-    }
-}
-
-int Hash::index(int key) {         // O(1)
-    return key % size;
-}
-
-void Hash::insert(int key) {       // Average: O(1), Worst: O(n)
-    int temp = index(key);
-    if (!check[temp]) {
-        table[temp] = key;
-        check[temp] = true;
-        cout << "The Number " << key << " was inserted at index " << temp << endl;
-    } else {
-        for (int i = 1; i < size; i++) {
-            int newIdx = (temp + i) % size;
-            if (!check[newIdx]) {
-                table[newIdx] = key;
-                check[newIdx] = true;
-                cout << "The Number " << key << " was inserted at index " << newIdx << endl;
+    
+    
+    
+    void hashtable::insert(int key){
+        int index = hashfunction(key);
+        int start = index;
+        while(table[index].isoccupied || table[index].isdeleted){
+            index = (index + 1) % SIZE;
+            if(index == start){
+                cout << "The hash table is full" << endl;
                 return;
             }
-            if (newIdx == temp) break;
         }
-        cout << "The Hash Table is Full" << endl;
+        table[index].value = key;
+        table[index].isoccupied = true;
+        table[index].isdeleted = false;
+        cout << "Inserted " << key << " at index " << index << endl;
     }
-}
-
-void Hash::display() {             // O(n)
-    for (int i = 0; i < size; i++) {
-        if (check[i]) {
-            cout << "Index " << i << " => " << table[i] << endl;
-        } else {
-            cout << "Index " << i << " => Empty" << endl;
+    
+    
+    void hashtable::display(){
+        cout << "Hashtable: " << endl;
+        for(int i = 0;i < SIZE;i++){
+            if(table[i].isoccupied == true && table[i].isdeleted == false){
+                cout << i << " ---> " << table[i].value << endl;
+            }else{
+                cout << i << " ---> " << endl;
+            }
         }
     }
-}
-
-void Hash::del(int key) {          // Average: O(1), Worst: O(n)
-    int temp = index(key);
-    if (check[temp] && table[temp] == key) {
-        check[temp] = false;
-        cout << "The Number " << key << " was deleted from index " << temp << endl;
-    } else {
-        for (int i = 1; i < size; i++) {
-            int newIdx = (temp + i) % size;
-            if (check[newIdx] && table[newIdx] == key) {
-                check[newIdx] = false;
-                cout << "The Number " << key << " was deleted from index " << newIdx << endl;
+    
+    void hashtable::remove(int key){
+        int index = hashfunction(key);
+        int start = index;
+    
+        while(table[index].isdeleted || table[index].isoccupied){
+            if(key == table[index].value){
+                table[index].isoccupied = false;
+                table[index].isdeleted = true;
+                cout << "Deleted" << key << " at index " << index << endl;
                 return;
             }
-            if (newIdx == temp) break;
-        }
-        cout << "There is No Number " << key << " in the Hash Table" << endl;
-    }
-}
-
-void Hash::search(int key) {       // Average: O(1), Worst: O(n)
-    int temp = index(key);
-    if (check[temp] && table[temp] == key) {
-        cout << "The Number " << key << " is found at index " << temp << endl;
-    } else {
-        for (int i = 1; i < size; i++) {
-            int newIdx = (temp + i) % size;
-            if (check[newIdx] && table[newIdx] == key) {
-                cout << "The Number " << key << " is found at index " << newIdx << endl;
+            index = (index + 1)%SIZE;
+            if(index == start){
+                cout << "The hashtable is Empty" << endl;
                 return;
             }
-            if (newIdx == temp) break;
         }
-        cout << "The Number " << key << " is not found in the Hash Table" << endl;
     }
-}
+    
+    
+    void hashtable::search(int key){
+        int index = hashfunction(key);
+        int start = index;
+    
+        while(table[index].isoccupied == true){
+            if(key == table[index].value){
+                cout << "Found Element " << key << " at index " << index << endl;
+                return; 
+            }
+            index = (index + 1)%SIZE;
+            if(index == start){
+                break;
+            }
+        }
+        cout << "The element " << key << " not found !" << endl; 
+    }
