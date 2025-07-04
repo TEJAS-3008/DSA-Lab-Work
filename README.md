@@ -35,9 +35,8 @@ Each folder contains:
 - 🥞 Stacks: Array & Linked List implementation, Infix/Postfix evaluation
 - 📬 Queues: Circular Queue, Deque, Priority Queue
 - 🌳 Trees: Binary Trees, BST, Traversals, Heaps
-- 🌐 Graphs: BFS, DFS, Dijkstra’s, Topological Sort
+- 🌐 Graphs: BFS, DFS, Dijkstra’s
 - 🔍 Searching & Sorting: Binary Search, Merge Sort, Quick Sort
-- 🔁 Recursion & Backtracking: N-Queens, Sudoku Solver
 - 🧮 Hashing: Hash Tables, Collision Resolution
 
 ---
